@@ -2,10 +2,10 @@ import { Fragment, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const navigation = [
-  { name: "eCommerce", href: "/", current: true },
-  { name: "Products", href: "/products", current: false },
+  { name: "Products", href: "/", current: true },
   { name: "Add a product", href: "/add-product", current: false },
 ];
 
@@ -14,8 +14,13 @@ function classNames(...classes) {
 }
 
 export default function NavbarComponent() {
+  const data = useSelector((state) => state.cart);
   const [navs, setNavs] = useState(navigation);
   const handleLinksClick = (index) => {
+    if (index === "undefined") {
+      setNavs(navs.map((nav) => (nav.current = false)));
+      return;
+    }
     setNavs(
       navs.map((nav, indx) => {
         if (indx === index) {
@@ -28,7 +33,7 @@ export default function NavbarComponent() {
     );
   };
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 ">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-8xl px-2 sm:px-6 lg:px-8">
@@ -77,7 +82,7 @@ export default function NavbarComponent() {
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* Profile dropdown */}
                 <div className="relative">
-                  <Link to={"/cart"}>
+                  <Link to={"/cart"} onClick={handleLinksClick}>
                     <img
                       className=" h-12 w-12"
                       src="https://cdn-icons-png.flaticon.com/128/5542/5542671.png"
@@ -85,7 +90,7 @@ export default function NavbarComponent() {
                     />
                   </Link>
                   <p className="absolute text-lg font-bold text-gray-800 bg-amber-300 w-6 h-6 flex items-center justify-center rounded-full bottom-7 left-8">
-                    7
+                    {data.length}
                   </p>
                 </div>
               </div>
